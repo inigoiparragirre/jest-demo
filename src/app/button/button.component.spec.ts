@@ -21,7 +21,7 @@ describe('ButtonComponent', () => {
   describe('should set the title according to the [title] input', () => {
     spectator = createComponent({props: { 'title': 'Click' }});
 
-    expect(spectator.query('button')).toHaveText('Click');
+    expect(spectator.query('button')).toHaveTextContent('Click');
   });
 
   test('should emit the $event on click', () => {
