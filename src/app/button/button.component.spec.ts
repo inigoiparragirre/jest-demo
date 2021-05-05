@@ -1,5 +1,6 @@
 import { ButtonComponent } from './button.component';
 import { Spectator, createComponentFactory } from '@ngneat/spectator';
+import { delay } from 'rxjs/operators';
 
 describe('ButtonComponent', () => {
 
@@ -18,19 +19,25 @@ describe('ButtonComponent', () => {
     expect(spectator.query('button')).not.toHaveClass('success');
   });
 
-  describe('should set the title according to the [title] input', () => {
-    spectator = createComponent({props: { 'title': 'Click' }});
+  test('should set the title according to the title input', () => {
+    spectator = createComponent();
+    spectator.setInput('title', 'Titulo');
+    expect(spectator.query('button')).toHaveTextContent('Titulo');
+  });
 
+  test('should set the title according to the title input', () => {
+    spectator = createComponent({props: {title: 'Click'}});
     expect(spectator.query('button')).toHaveTextContent('Click');
   });
 
-  test('should emit the $event on click', () => {
+  test('should emit the $event on click', async (done) => {
     spectator = createComponent({});
     let output;
-    spectator.output<{ type: string }>('click').subscribe(result => output = result);
-
+    spectator.output<{ type: string }>('click').subscribe((result) => {
+      output = result;
+      expect(output).toEqual({ type: 'click' });
+      done();
+    });
     spectator.component.onClick({ type: 'click' });
-    spectator.detectChanges();
-    expect(output).toEqual({ type: 'click' });
   });
 });
